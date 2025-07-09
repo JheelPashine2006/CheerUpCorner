@@ -1,103 +1,72 @@
-import Image from "next/image";
+// app/page.js
+"use client";
+import Link from "next/link";
+import { useAuth } from "@/utils/AuthProvider";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { user, supabase } = useAuth();
+  const moods = [
+    { mood: "happy", emoji: "😊", color: "bg-yellow-400" },
+    { mood: "sad", emoji: "😢", color: "bg-blue-500" },
+    { mood: "romantic", emoji: "😍", color: "bg-pink-500" },
+    { mood: "angry", emoji: "😤", color: "bg-red-600" },
+    { mood: "calm", emoji: "😌", color: "bg-green-500" },
+    { mood: "excited", emoji: "🤩", color: "bg-purple-500" },
+  ];
+  
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  return (
+    <main className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-8 relative">
+      <div className="absolute top-6 right-6 flex gap-4 z-10">
+        {!user && (
+          <>
+            <Link href="/auth/login">
+              <button className="px-6 py-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-white font-bold rounded-full shadow-lg hover:scale-105 transition-all duration-200">
+                Login
+              </button>
+            </Link>
+            <Link href="/auth/signup">
+              <button className="px-6 py-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-white font-bold rounded-full shadow-lg hover:scale-105 transition-all duration-200">
+                Sign Up
+              </button>
+            </Link>
+          </>
+        )}
+        {user && (
+          <button
+            onClick={handleLogout}
+            className="px-6 py-2 bg-gradient-to-r from-gray-700 to-pink-500 text-white font-bold rounded-full shadow-lg hover:scale-105 transition-all duration-200"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            Logout
+          </button>
+        )}
+      </div>
+      <h1 className="text-5xl sm:text-6xl font-extrabold text-center mb-2 bg-gradient-to-r from-purple-400 via-pink-500 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg">
+        CheerUP Corner
+      </h1>
+      <p className="text-lg text-gray-300 mb-6 text-center">
+        Your cozy corner for mood-based smiles ✨
+      </p>
+      <h2 className="text-4xl mb-8 font-bold text-center">
+        How are you feeling today?
+      </h2>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+        {moods.map(({ mood, emoji, color }) => (
+          <Link key={mood} href={`/suggestions/${mood}`}>
+            <div
+              className={`w-32 h-32 flex flex-col items-center justify-center rounded-lg shadow-lg cursor-pointer transform hover:scale-105 transition ${color}`}
+            >
+              <span className="text-4xl">{emoji}</span>
+              <span className="mt-2 capitalize font-semibold">{mood}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </main>
   );
 }

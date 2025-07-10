@@ -58,11 +58,11 @@ export default function Home() {
           How are you feeling today?
         </h2>
         <div className="flex justify-center w-full">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 sm:gap-6 max-w-xs sm:max-w-2xl lg:max-w-5xl mx-auto">
             {moods.map(({ mood, emoji, color }) => (
               <Link key={mood} href={`/suggestions/${mood}`}>
                 <div
-                  className={`w-full h-24 sm:w-32 sm:h-32 lg:w-40 lg:h-40 flex flex-col items-center justify-center rounded-lg shadow-lg cursor-pointer transform hover:scale-105 transition ${color}`}
+                  className={`w-full h-28 sm:w-32 sm:h-32 lg:w-40 lg:h-40 flex flex-col items-center justify-center rounded-lg shadow-lg cursor-pointer transform hover:scale-105 transition ${color}`}
                 >
                   <span className="text-2xl sm:text-4xl lg:text-5xl">{emoji}</span>
                   <span className="mt-1 sm:mt-2 lg:mt-3 capitalize font-semibold text-sm sm:text-base lg:text-lg">{mood}</span>

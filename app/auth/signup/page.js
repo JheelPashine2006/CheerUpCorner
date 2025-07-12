@@ -24,6 +24,10 @@ export default function SignupPage() {
     } else {
       setSuccess("Account created! Please check your email to confirm your account before logging in.");
       setIsLoading(false);
+      // Redirect to home page after 3 seconds
+      setTimeout(() => {
+        router.push("/");
+      }, 3000);
     }
   };
 

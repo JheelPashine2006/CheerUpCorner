@@ -34,9 +34,13 @@ export default function ConfirmEmailPage() {
         setStatus("success");
         setMessage("Your email has been verified! You can now log in to your account.");
         setShowModal(true);
+        console.log("Email verified successfully, showing immediate popup...");
+        
+        // Show popup immediately and redirect after user closes it
         setTimeout(() => {
+          console.log("Redirecting to /?verified=1");
           router.push("/?verified=1");
-        }, 2000);
+        }, 5000); // Give user more time to read the message
       }
     };
     confirmEmail();
@@ -58,12 +62,25 @@ export default function ConfirmEmailPage() {
             {status === "success" && (
               <>
                 <svg className="h-14 w-14 text-green-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                <h2 className="text-2xl font-bold text-green-700 mb-2 text-center">Email Verified!</h2>
+                <h2 className="text-2xl font-bold text-green-700 mb-2 text-center">🎉 Email Verified Successfully!</h2>
                 <p className="text-base text-gray-700 mb-4 text-center">{message}</p>
                 <p className="text-base text-gray-700 mb-6 text-center">Please <span className="font-semibold text-pink-600">log in</span> to continue to your account.</p>
-                <Link href="/auth/login">
-                  <button className="px-6 py-3 bg-gradient-to-r from-pink-400 via-yellow-400 to-purple-400 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 text-lg">Go to Login</button>
-                </Link>
+                <div className="flex gap-3">
+                  <Link href="/auth/login">
+                    <button className="px-6 py-3 bg-gradient-to-r from-pink-400 via-yellow-400 to-purple-400 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 text-lg">Go to Login</button>
+                  </Link>
+                  <button 
+                    onClick={() => {
+                      setShowModal(false);
+                      setTimeout(() => {
+                        router.push("/?verified=1");
+                      }, 500);
+                    }}
+                    className="px-6 py-3 bg-gray-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 text-lg"
+                  >
+                    Go to Home
+                  </button>
+                </div>
               </>
             )}
             {status === "error" && (

@@ -21,14 +21,37 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    if (searchParams.get("verified") === "1") {
+    // Check for verified parameter in URL
+    const verified = searchParams.get("verified");
+    console.log("Verified param:", verified); // Debug log
+    
+    if (verified === "1") {
+      console.log("Setting popup to true"); // Debug log
       setShowVerifiedPopup(true);
+      
       // Remove the query param from the URL after showing the popup
       const url = new URL(window.location.href);
       url.searchParams.delete("verified");
-      window.history.replaceState({}, document.title, url.pathname + url.search);
+      window.history.replaceState({}, document.title, url.pathname);
     }
   }, [searchParams]);
+
+  // Also check on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const verified = urlParams.get("verified");
+    console.log("Initial verified param:", verified);
+    
+    if (verified === "1") {
+      console.log("Setting popup to true on mount");
+      setShowVerifiedPopup(true);
+      
+      // Remove the query param from the URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("verified");
+      window.history.replaceState({}, document.title, url.pathname);
+    }
+  }, []);
   
   const handleLogout = async () => {
     await supabase.auth.signOut();

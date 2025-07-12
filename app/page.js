@@ -2,6 +2,8 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/utils/AuthProvider";
+import { useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function Home() {
   const { user, supabase } = useAuth();
@@ -13,6 +15,20 @@ export default function Home() {
     { mood: "calm", emoji: "😌", color: "bg-green-500" },
     { mood: "excited", emoji: "🤩", color: "bg-purple-500" },
   ];
+
+  const searchParams = useSearchParams();
+  const [showVerifiedPopup, setShowVerifiedPopup] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (searchParams.get("verified") === "1") {
+      setShowVerifiedPopup(true);
+      // Remove the query param from the URL after showing the popup
+      const url = new URL(window.location.href);
+      url.searchParams.delete("verified");
+      window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
+  }, [searchParams]);
   
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -21,6 +37,17 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-900 text-white relative">
+      {/* Verified Email Popup */}
+      {showVerifiedPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 max-w-md w-full border-4 border-transparent bg-clip-padding border-gradient-to-r from-pink-400 via-yellow-400 to-purple-400 relative flex flex-col items-center animate-fade-in">
+            <svg className="h-14 w-14 text-green-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+            <h2 className="text-2xl font-bold text-green-700 mb-2 text-center">Email Verified!</h2>
+            <p className="text-base text-gray-700 mb-4 text-center">Email verified successfully! Please <span className='font-semibold text-pink-600'>log in</span> to your account.</p>
+            <button onClick={() => setShowVerifiedPopup(false)} className="px-6 py-3 bg-gradient-to-r from-pink-400 via-yellow-400 to-purple-400 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 text-lg mt-2">Close</button>
+          </div>
+        </div>
+      )}
       {/* Top-right corner buttons, absolutely positioned */}
       <div className="absolute top-6 right-6 flex gap-4 z-10">
         {!user && (

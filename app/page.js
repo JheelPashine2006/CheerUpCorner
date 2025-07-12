@@ -36,13 +36,19 @@ export default function Home() {
     }
   }, [searchParams]);
 
-  // Also check on component mount
+  // Also check on component mount and for mobile devices
   useEffect(() => {
+    // Multiple ways to check for the verified parameter
     const urlParams = new URLSearchParams(window.location.search);
     const verified = urlParams.get("verified");
     console.log("Initial verified param:", verified);
     
-    if (verified === "1") {
+    // Also check if we're coming from the confirm page
+    const referrer = document.referrer;
+    const isFromConfirm = referrer.includes('/auth/confirm');
+    console.log("Referrer:", referrer, "Is from confirm:", isFromConfirm);
+    
+    if (verified === "1" || isFromConfirm) {
       console.log("Setting popup to true on mount");
       setShowVerifiedPopup(true);
       
@@ -51,6 +57,40 @@ export default function Home() {
       url.searchParams.delete("verified");
       window.history.replaceState({}, document.title, url.pathname);
     }
+  }, []);
+
+  // Additional check for mobile devices
+  useEffect(() => {
+    const checkVerifiedParam = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const verified = urlParams.get("verified");
+      console.log("Mobile check - verified param:", verified);
+      
+      // Also check localStorage as fallback for mobile
+      const localStorageVerified = localStorage.getItem("emailVerified");
+      console.log("LocalStorage verified:", localStorageVerified);
+      
+      if (verified === "1" || localStorageVerified === "true") {
+        console.log("Setting popup to true for mobile");
+        setShowVerifiedPopup(true);
+        
+        // Clear localStorage
+        localStorage.removeItem("emailVerified");
+        
+        // Remove the query param from the URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete("verified");
+        window.history.replaceState({}, document.title, url.pathname);
+      }
+    };
+
+    // Check immediately
+    checkVerifiedParam();
+    
+    // Also check after a short delay for mobile browsers
+    const timer = setTimeout(checkVerifiedParam, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
   
   const handleLogout = async () => {

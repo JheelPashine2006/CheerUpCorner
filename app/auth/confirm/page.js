@@ -36,10 +36,14 @@ export default function ConfirmEmailPage() {
         setShowModal(true);
         console.log("Email verified successfully, showing immediate popup...");
         
+        // Set localStorage as backup for mobile devices
+        localStorage.setItem("emailVerified", "true");
+        
         // Show popup immediately and redirect after user closes it
         setTimeout(() => {
           console.log("Redirecting to /?verified=1");
-          router.push("/?verified=1");
+          // Use window.location for better mobile compatibility
+          window.location.href = "/?verified=1";
         }, 5000); // Give user more time to read the message
       }
     };
@@ -73,7 +77,8 @@ export default function ConfirmEmailPage() {
                     onClick={() => {
                       setShowModal(false);
                       setTimeout(() => {
-                        router.push("/?verified=1");
+                        // Use window.location for better mobile compatibility
+                        window.location.href = "/?verified=1";
                       }, 500);
                     }}
                     className="px-6 py-3 bg-gray-500 text-white font-bold rounded-xl shadow-lg hover:scale-105 transition-all duration-200 text-lg"

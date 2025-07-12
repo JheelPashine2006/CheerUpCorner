@@ -2,10 +2,10 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/utils/AuthProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-export default function Home() {
+function HomeContent() {
   const { user, supabase } = useAuth();
   const moods = [
     { mood: "happy", emoji: "😊", color: "bg-yellow-400" },
@@ -163,5 +163,17 @@ export default function Home() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-400"></div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
